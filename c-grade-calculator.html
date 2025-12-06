@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Programming - Grade Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .language-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .calculator-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box h2 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .grade-display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin: 15px 0;
+        }
+
+        .percentage {
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .code-section {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .code-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-section pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .code-section code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; }
+            .header h1 { font-size: 2rem; }
+            .grade-display { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="language-tag">🟦 C Programming</span>
+            <h1>Grade Calculator</h1>
+            <p>Calculate your academic grade based on marks</p>
+        </div>
+
+        <div class="calculator-box">
+            <div class="input-group">
+                <label for="marks">Enter Your Marks (0-100)</label>
+                <input type="number" id="marks" placeholder="Enter marks..." min="0" max="100">
+            </div>
+            <button class="calculate-btn" onclick="calculateGrade()">Calculate Grade</button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <h2>Your Grade</h2>
+            <div class="grade-display" id="gradeDisplay">-</div>
+            <div class="percentage" id="percentage">-</div>
+            <div class="grade-info" id="gradeInfo">-</div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">✨</div>
+                <h3>Simple Interface</h3>
+                <p>Easy-to-use calculator</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎯</div>
+                <h3>Accurate Results</h3>
+                <p>Precise calculations</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>Instant Output</h3>
+                <p>Get results immediately</p>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h3>💻 C Code</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    float marks;
+    char grade;
+    
+    printf("Enter your marks (0-100): ");
+    scanf("%f", &marks);
+    
+    if (marks >= 90) {
+        grade = 'A';
+        printf("Grade: %c - Outstanding Performance!\\n", grade);
+    }
+    else if (marks >= 80) {
+        grade = 'B';
+        printf("Grade: %c - Excellent Work!\\n", grade);
+    }
+    else if (marks >= 70) {
+        grade = 'C';
+        printf("Grade: %c - Very Good!\\n", grade);
+    }
+    else if (marks >= 60) {
+        grade = 'D';
+        printf("Grade: %c - Good Job!\\n", grade);
+    }
+    else if (marks >= 50) {
+        grade = 'E';
+        printf("Grade: %c - Average Performance\\n", grade);
+    }
+    else {
+        grade = 'F';
+        printf("Grade: %c - Failed - Keep Trying!\\n", grade);
+    }
+    
+    return 0;
+}</code></pre>
+        </div>
+
+        <center>
+            <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        </center>
+    </div>
+
+    <script>
+        function calculateGrade() {
+            const marks = parseFloat(document.getElementById('marks').value);
+            const resultBox = document.getElementById('resultBox');
+            const gradeDisplay = document.getElementById('gradeDisplay');
+            const percentage = document.getElementById('percentage');
+            const gradeInfo = document.getElementById('gradeInfo');
+
+            if (isNaN(marks) || marks < 0 || marks > 100) {
+                alert('Please enter valid marks between 0 and 100!');
+                return;
+            }
+
+            let grade, info;
+
+            if (marks >= 90) {
+                grade = 'A+';
+                info = 'Outstanding Performance! 🌟';
+            } else if (marks >= 80) {
+                grade = 'A';
+                info = 'Excellent Work! 🎉';
+            } else if (marks >= 70) {
+                grade = 'B+';
+                info = 'Very Good! 👍';
+            } else if (marks >= 60) {
+                grade = 'B';
+                info = 'Good Job! ✨';
+            } else if (marks >= 50) {
+                grade = 'C';
+                info = 'Average Performance 📝';
+            } else if (marks >= 40) {
+                grade = 'D';
+                info = 'Need Improvement 📚';
+            } else {
+                grade = 'F';
+                info = 'Failed - Keep Trying! 💪';
+            }
+
+            gradeDisplay.textContent = grade;
+            percentage.textContent = `${marks}% Marks`;
+            gradeInfo.textContent = info;
+            resultBox.style.display = 'block';
+        }
+
+        document.getElementById('marks').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateGrade();
+        });
+    </script>
+</body>
+</html>

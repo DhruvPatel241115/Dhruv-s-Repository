@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python - Chart Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .language-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .chart-panel {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 30px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .chart-panel h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .data-input {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .data-input input {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .add-data-btn {
+            padding: 12px 25px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-data-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            min-height: 400px;
+        }
+
+        .chart-title {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 300px;
+            padding: 20px;
+            border-bottom: 3px solid #667eea;
+            border-left: 3px solid #667eea;
+        }
+
+        .bar {
+            width: 80px;
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            transition: all 0.3s;
+            animation: barGrow 0.8s ease;
+        }
+
+        @keyframes barGrow {
+            from {
+                height: 0;
+                opacity: 0;
+            }
+        }
+
+        .bar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .data-list {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        .data-list h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .remove-btn {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .code-section {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .code-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-section pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .code-section code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .data-input {
+                grid-template-columns: 1fr;
+            }
+            .bar {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="language-tag">🐍 Python Programming</span>
+            <h1>Interactive Chart Visualization</h1>
+            <p>Create beautiful bar charts with your data</p>
+        </div>
+
+        <div class="chart-panel">
+            <h3>📊 Add Data Points</h3>
+            <div class="data-input">
+                <input type="text" id="label" placeholder="Enter label (e.g., Product A)...">
+                <input type="number" id="value" placeholder="Value..." min="0">
+                <button class="add-data-btn" onclick="addData()">➕ Add</button>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Bar Chart</div>
+            <div class="bar-chart" id="barChart">
+                <p style="text-align: center; color: #999; width: 100%;">No data yet. Add some data points to see the chart!</p>
+            </div>
+        </div>
+
+        <div class="data-list">
+            <h4>Data Points</h4>
+            <div id="dataList">
+                <p style="text-align: center; color: #999;">No data added yet</p>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h3>💻 Python Code</h3>
+            <pre><code>import matplotlib.pyplot as plt
+
+# Data for the chart
+labels = []
+values = []
+
+print("=== Bar Chart Visualization ===")
+print("Enter data points (type 'done' to finish)")
+
+while True:
+    label = input("Enter label (or 'done' to finish): ")
+    if label.lower() == 'done':
+        break
+    
+    try:
+        value = float(input("Enter value: "))
+        labels.append(label)
+        values.append(value)
+        print(f"Added: {label} = {value}")
+    except ValueError:
+        print("Invalid value! Please enter a number.")
+
+if len(labels) > 0:
+    # Create bar chart
+    plt.figure(figsize=(10, 6))
+    plt.bar(labels, values, color=['#667eea', '#764ba2', '#f093fb', 
+                                     '#f5576c', '#06beb6'])
+    
+    plt.xlabel('Labels', fontsize=12)
+    plt.ylabel('Values', fontsize=12)
+    plt.title('Bar Chart Visualization', fontsize=14, fontweight='bold')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    
+    # Display the chart
+    plt.show()
+    
+    # Print summary
+    print("\\n=== Chart Summary ===")
+    for i in range(len(labels)):
+        print(f"{labels[i]}: {values[i]}")
+else:
+    print("No data entered!")</code></pre>
+        </div>
+
+        <center>
+            <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        </center>
+    </div>
+
+    <script>
+        let chartData = [];
+
+        function updateChart() {
+            const barChart = document.getElementById('barChart');
+            
+            if (chartData.length === 0) {
+                barChart.innerHTML = '<p style="text-align: center; color: #999; width: 100%;">No data yet. Add some data points to see the chart!</p>';
+                return;
+            }
+
+            const maxValue = Math.max(...chartData.map(d => d.value));
+            
+            barChart.innerHTML = '';
+            chartData.forEach((data) => {
+                const height = (data.value / maxValue) * 250;
+                const barDiv = document.createElement('div');
+                barDiv.className = 'bar';
+                barDiv.style.height = height + 'px';
+                barDiv.innerHTML = `
+                    <div class="bar-value">${data.value}</div>
+                    <div class="bar-label">${data.label}</div>
+                `;
+                barChart.appendChild(barDiv);
+            });
+        }
+
+        function updateDataList() {
+            const dataList = document.getElementById('dataList');
+            
+            if (chartData.length === 0) {
+                dataList.innerHTML = '<p style="text-align: center; color: #999;">No data added yet</p>';
+                return;
+            }
+
+            dataList.innerHTML = '';
+            chartData.forEach((data, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'data-item';
+                itemDiv.innerHTML = `
+                    <span><strong>${data.label}:</strong> ${data.value}</span>
+                    <button class="remove-btn">Remove</button>
+                `;
+                
+                const removeBtn = itemDiv.querySelector('.remove-btn');
+                removeBtn.addEventListener('click', () => removeData(index));
+                
+                dataList.appendChild(itemDiv);
+            });
+        }
+
+        function addData() {
+            const label = document.getElementById('label').value.trim();
+            const value = parseFloat(document.getElementById('value').value);
+
+            if (!label || isNaN(value) || value <= 0) {
+                alert('Please enter valid label and value!');
+                return;
+            }
+
+            chartData.push({ label, value });
+            
+            document.getElementById('label').value = '';
+            document.getElementById('value').value = '';
+
+            updateChart();
+            updateDataList();
+        }
+
+        function removeData(index) {
+            chartData.splice(index, 1);
+            updateChart();
+            updateDataList();
+        }
+    </script>
+</body>
+</html>

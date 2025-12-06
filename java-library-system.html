@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java - Library Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .language-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .add-book-panel {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .add-book-panel h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            color: #f093fb;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #f093fb;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .book-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+            border-color: #f093fb;
+        }
+
+        .book-card h4 {
+            color: #f093fb;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .book-info {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .delete-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);
+        }
+
+        .code-section {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .code-section h3 {
+            color: #f093fb;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-section pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .code-section code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="language-tag">☕ Java Programming</span>
+            <h1>Library Management System</h1>
+            <p>Manage your book collection</p>
+        </div>
+
+        <div class="add-book-panel">
+            <h3>📚 Add New Book</h3>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Book Title</label>
+                    <input type="text" id="title" placeholder="Enter book title...">
+                </div>
+                <div class="input-group">
+                    <label>Author Name</label>
+                    <input type="text" id="author" placeholder="Enter author name...">
+                </div>
+                <div class="input-group">
+                    <label>ISBN Number</label>
+                    <input type="text" id="isbn" placeholder="Enter ISBN...">
+                </div>
+                <div class="input-group">
+                    <label>Year</label>
+                    <input type="number" id="year" placeholder="Publication year...">
+                </div>
+            </div>
+            <button class="add-btn" onclick="addBook()">➕ Add Book to Library</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalBooks">0</h3>
+                <p>Total Books</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="authors">0</h3>
+                <p>Authors</p>
+            </div>
+        </div>
+
+        <div id="booksContainer" class="books-grid">
+            <p style="text-align: center; color: #999; grid-column: 1/-1;">No books in library yet. Add your first book!</p>
+        </div>
+
+        <div class="code-section">
+            <h3>💻 Java Code</h3>
+            <pre><code>import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    private String title;
+    private String author;
+    private String isbn;
+    private int year;
+    
+    public Book(String title, String author, String isbn, int year) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.year = year;
+    }
+    
+    public void displayInfo() {
+        System.out.println("Title: " + title);
+        System.out.println("Author: " + author);
+        System.out.println("ISBN: " + isbn);
+        System.out.println("Year: " + year);
+    }
+}
+
+class Library {
+    private ArrayList&lt;Book&gt; books;
+    
+    public Library() {
+        books = new ArrayList&lt;&gt;();
+    }
+    
+    public void addBook(Book book) {
+        books.add(book);
+        System.out.println("Book added successfully!");
+    }
+    
+    public void displayAllBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books in library!");
+        } else {
+            for (int i = 0; i &lt; books.size(); i++) {
+                System.out.println("\\nBook " + (i + 1) + ":");
+                books.get(i).displayInfo();
+            }
+        }
+    }
+    
+    public void removeBook(int index) {
+        if (index &gt;= 0 && index &lt; books.size()) {
+            books.remove(index);
+            System.out.println("Book removed successfully!");
+        }
+    }
+}
+
+public class LibrarySystem {
+    public static void main(String[] args) {
+        Library library = new Library();
+        Scanner scanner = new Scanner(System.in);
+        
+        while (true) {
+            System.out.println("\\n1. Add Book\\n2. Display Books\\n3. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            
+            if (choice == 1) {
+                System.out.print("Enter title: ");
+                String title = scanner.nextLine();
+                System.out.print("Enter author: ");
+                String author = scanner.nextLine();
+                System.out.print("Enter ISBN: ");
+                String isbn = scanner.nextLine();
+                System.out.print("Enter year: ");
+                int year = scanner.nextInt();
+                
+                library.addBook(new Book(title, author, isbn, year));
+            } else if (choice == 2) {
+                library.displayAllBooks();
+            } else {
+                break;
+            }
+        }
+    }
+}</code></pre>
+        </div>
+
+        <center>
+            <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        </center>
+    </div>
+
+    <script>
+        let books = [];
+
+        function updateStats() {
+            document.getElementById('totalBooks').textContent = books.length;
+            const uniqueAuthors = [...new Set(books.map(b => b.author))].length;
+            document.getElementById('authors').textContent = uniqueAuthors;
+        }
+
+        function displayBooks() {
+            const container = document.getElementById('booksContainer');
+            
+            if (books.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; grid-column: 1/-1;">No books in library yet. Add your first book!</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            books.forEach((book, index) => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <h4>${book.title}</h4>
+                    <div class="book-info">📝 Author: ${book.author}</div>
+                    <div class="book-info">🔢 ISBN: ${book.isbn}</div>
+                    <div class="book-info">📅 Year: ${book.year}</div>
+                    <button class="delete-btn">🗑️ Remove</button>
+                `;
+                
+                const deleteBtn = bookCard.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => deleteBook(index));
+                
+                container.appendChild(bookCard);
+            });
+        }
+
+        function addBook() {
+            const title = document.getElementById('title').value.trim();
+            const author = document.getElementById('author').value.trim();
+            const isbn = document.getElementById('isbn').value.trim();
+            const year = document.getElementById('year').value.trim();
+
+            if (!title || !author || !isbn || !year) {
+                alert('Please fill all fields!');
+                return;
+            }
+
+            books.push({ title, author, isbn, year });
+            
+            document.getElementById('title').value = '';
+            document.getElementById('author').value = '';
+            document.getElementById('isbn').value = '';
+            document.getElementById('year').value = '';
+
+            displayBooks();
+            updateStats();
+        }
+
+        function deleteBook(index) {
+            if (confirm('Are you sure you want to remove this book?')) {
+                books.splice(index, 1);
+                displayBooks();
+                updateStats();
+            }
+        }
+
+        updateStats();
+    </script>
+</body>
+</html>

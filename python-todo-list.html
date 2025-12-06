@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python - Todo List App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .language-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fad0c4, #ffd1ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 2rem;
+            color: #f59e0b;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .add-todo {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .add-todo input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .add-todo input:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+
+        .add-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            border-color: #f59e0b;
+        }
+
+        .todo-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .todo-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .todo-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .delete-btn {
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .clear-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .code-section {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .code-section h3 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-section pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .code-section code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .add-todo {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="language-tag">🐍 Python Programming</span>
+            <h1>Todo List Manager</h1>
+            <p>Organize your tasks efficiently</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3 id="totalTasks">0</h3>
+                <p>Total Tasks</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="completedTasks">0</h3>
+                <p>Completed</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="pendingTasks">0</h3>
+                <p>Pending</p>
+            </div>
+        </div>
+
+        <div class="add-todo">
+            <input type="text" id="todoInput" placeholder="Add a new task..." />
+            <button class="add-btn" onclick="addTodo()">➕ Add</button>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-btn active" onclick="filterTodos('all')">All</button>
+            <button class="filter-btn" onclick="filterTodos('active')">Active</button>
+            <button class="filter-btn" onclick="filterTodos('completed')">Completed</button>
+        </div>
+
+        <div class="todo-list" id="todoList">
+            <div class="empty-state">
+                <div class="icon">📝</div>
+                <p>No tasks yet. Add your first task above!</p>
+            </div>
+        </div>
+
+        <button class="clear-btn" onclick="clearCompleted()">🗑️ Clear Completed Tasks</button>
+
+        <div class="code-section">
+            <h3>💻 Python Code</h3>
+            <pre><code>class TodoList:
+    def __init__(self):
+        self.tasks = []
+    
+    def add_task(self, task):
+        self.tasks.append({"text": task, "completed": False})
+        print(f"✅ Task added: {task}")
+    
+    def view_tasks(self):
+        if not self.tasks:
+            print("No tasks in your list!")
+            return
+        
+        print("\\n=== Your Todo List ===")
+        for i, task in enumerate(self.tasks, 1):
+            status = "✓" if task["completed"] else "○"
+            print(f"{i}. [{status}] {task['text']}")
+    
+    def complete_task(self, index):
+        if 0 &lt;= index &lt; len(self.tasks):
+            self.tasks[index]["completed"] = True
+            print(f"✅ Task completed: {self.tasks[index]['text']}")
+        else:
+            print("Invalid task number!")
+    
+    def delete_task(self, index):
+        if 0 &lt;= index &lt; len(self.tasks):
+            deleted = self.tasks.pop(index)
+            print(f"🗑️ Task deleted: {deleted['text']}")
+        else:
+            print("Invalid task number!")
+    
+    def get_stats(self):
+        total = len(self.tasks)
+        completed = sum(1 for task in self.tasks if task["completed"])
+        pending = total - completed
+        
+        print(f"\\n📊 Stats: Total: {total} | Completed: {completed} | Pending: {pending}")
+
+# Main program
+def main():
+    todo = TodoList()
+    
+    while True:
+        print("\\n=== Todo List Menu ===")
+        print("1. Add Task")
+        print("2. View Tasks")
+        print("3. Complete Task")
+        print("4. Delete Task")
+        print("5. View Stats")
+        print("6. Exit")
+        
+        choice = input("\\nEnter choice (1-6): ")
+        
+        if choice == '1':
+            task = input("Enter task: ")
+            todo.add_task(task)
+        elif choice == '2':
+            todo.view_tasks()
+        elif choice == '3':
+            todo.view_tasks()
+            index = int(input("Enter task number to complete: ")) - 1
+            todo.complete_task(index)
+        elif choice == '4':
+            todo.view_tasks()
+            index = int(input("Enter task number to delete: ")) - 1
+            todo.delete_task(index)
+        elif choice == '5':
+            todo.get_stats()
+        elif choice == '6':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice!")
+
+if __name__ == "__main__":
+    main()</code></pre>
+        </div>
+
+        <center>
+            <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        </center>
+    </div>
+
+    <script>
+        let todos = [];
+        let currentFilter = 'all';
+
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const pending = total - completed;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+        }
+
+        function renderTodos() {
+            const todoList = document.getElementById('todoList');
+            
+            let filteredTodos = todos;
+            if (currentFilter === 'active') {
+                filteredTodos = todos.filter(t => !t.completed);
+            } else if (currentFilter === 'completed') {
+                filteredTodos = todos.filter(t => t.completed);
+            }
+
+            if (filteredTodos.length === 0) {
+                todoList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>${currentFilter === 'all' ? 'No tasks yet. Add your first task above!' : 
+                             currentFilter === 'active' ? 'No active tasks!' : 'No completed tasks!'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            todoList.innerHTML = '';
+            todos.forEach((todo, index) => {
+                if (currentFilter === 'active' && todo.completed) return;
+                if (currentFilter === 'completed' && !todo.completed) return;
+                
+                const todoDiv = document.createElement('div');
+                todoDiv.className = 'todo-item' + (todo.completed ? ' completed' : '');
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'checkbox';
+                checkbox.checked = todo.completed;
+                checkbox.addEventListener('change', () => toggleTodo(index));
+                
+                const textDiv = document.createElement('div');
+                textDiv.className = 'todo-text';
+                textDiv.textContent = todo.text;
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', () => deleteTodo(index));
+                
+                todoDiv.appendChild(checkbox);
+                todoDiv.appendChild(textDiv);
+                todoDiv.appendChild(deleteBtn);
+                
+                todoList.appendChild(todoDiv);
+            });
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+
+            if (!text) {
+                alert('Please enter a task!');
+                return;
+            }
+
+            todos.push({ text, completed: false });
+            input.value = '';
+            
+            updateStats();
+            renderTodos();
+        }
+
+        function toggleTodo(index) {
+            todos[index].completed = !todos[index].completed;
+            updateStats();
+            renderTodos();
+        }
+
+        function deleteTodo(index) {
+            todos.splice(index, 1);
+            updateStats();
+            renderTodos();
+        }
+
+        function clearCompleted() {
+            const completedCount = todos.filter(t => t.completed).length;
+            if (completedCount === 0) {
+                alert('No completed tasks to clear!');
+                return;
+            }
+            
+            if (confirm(`Clear ${completedCount} completed task(s)?`)) {
+                todos = todos.filter(t => !t.completed);
+                updateStats();
+                renderTodos();
+            }
+        }
+
+        function filterTodos(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderTodos();
+        }
+
+        document.getElementById('todoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        updateStats();
+    </script>
+</body>
+</html>

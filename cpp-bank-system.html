@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ - Bank Account System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #06beb6 0%, #48b1bf 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .language-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #06beb6, #48b1bf);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #06beb6, #48b1bf);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .account-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .account-card {
+            background: linear-gradient(135deg, #06beb6, #48b1bf);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(6, 190, 182, 0.3);
+        }
+
+        .account-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .balance {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 20px 0;
+        }
+
+        .transaction-panel {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .transaction-panel h3 {
+            color: #06beb6;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #06beb6;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-deposit {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+        }
+
+        .btn-withdraw {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .history {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .history h3 {
+            color: #06beb6;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .history-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deposit {
+            color: #11998e;
+            font-weight: 700;
+        }
+
+        .withdraw {
+            color: #f5576c;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #06beb6, #48b1bf);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(6, 190, 182, 0.3);
+        }
+
+        .code-section {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .code-section h3 {
+            color: #06beb6;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-section pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .code-section code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .account-container {
+                grid-template-columns: 1fr;
+            }
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="language-tag">🔷 C++ Programming</span>
+            <h1>Bank Account System</h1>
+            <p>Manage your account transactions</p>
+        </div>
+
+        <div class="account-container">
+            <div class="account-card">
+                <h2>Account Balance</h2>
+                <div class="balance" id="balance">$0.00</div>
+                <p>Account Number: 1234567890</p>
+            </div>
+            <div class="account-card" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                <h2>Total Transactions</h2>
+                <div class="balance" id="transactionCount">0</div>
+                <p>Deposits & Withdrawals</p>
+            </div>
+        </div>
+
+        <div class="transaction-panel">
+            <h3>Make a Transaction</h3>
+            <div class="input-group">
+                <label for="amount">Enter Amount</label>
+                <input type="number" id="amount" placeholder="Enter amount..." min="0" step="0.01">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-deposit" onclick="deposit()">💰 Deposit</button>
+                <button class="btn btn-withdraw" onclick="withdraw()">💸 Withdraw</button>
+            </div>
+        </div>
+
+        <div class="history">
+            <h3>Transaction History</h3>
+            <div id="historyList">
+                <p style="text-align: center; color: #999;">No transactions yet</p>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h3>💻 C++ Code</h3>
+            <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class BankAccount {
+private:
+    double balance;
+    int transactionCount;
+    
+public:
+    BankAccount() {
+        balance = 0.0;
+        transactionCount = 0;
+    }
+    
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            transactionCount++;
+            cout &lt;&lt; "Deposited: $" &lt;&lt; amount &lt;&lt; endl;
+            cout &lt;&lt; "New Balance: $" &lt;&lt; balance &lt;&lt; endl;
+        }
+    }
+    
+    void withdraw(double amount) {
+        if (amount > 0 && amount &lt;= balance) {
+            balance -= amount;
+            transactionCount++;
+            cout &lt;&lt; "Withdrawn: $" &lt;&lt; amount &lt;&lt; endl;
+            cout &lt;&lt; "New Balance: $" &lt;&lt; balance &lt;&lt; endl;
+        } else {
+            cout &lt;&lt; "Insufficient balance!" &lt;&lt; endl;
+        }
+    }
+    
+    void displayBalance() {
+        cout &lt;&lt; "Current Balance: $" &lt;&lt; balance &lt;&lt; endl;
+        cout &lt;&lt; "Total Transactions: " &lt;&lt; transactionCount &lt;&lt; endl;
+    }
+};
+
+int main() {
+    BankAccount account;
+    int choice;
+    double amount;
+    
+    do {
+        cout &lt;&lt; "\\n1. Deposit\\n2. Withdraw\\n3. Check Balance\\n4. Exit\\n";
+        cout &lt;&lt; "Enter choice: ";
+        cin &gt;&gt; choice;
+        
+        switch(choice) {
+            case 1:
+                cout &lt;&lt; "Enter amount to deposit: ";
+                cin &gt;&gt; amount;
+                account.deposit(amount);
+                break;
+            case 2:
+                cout &lt;&lt; "Enter amount to withdraw: ";
+                cin &gt;&gt; amount;
+                account.withdraw(amount);
+                break;
+            case 3:
+                account.displayBalance();
+                break;
+        }
+    } while(choice != 4);
+    
+    return 0;
+}</code></pre>
+        </div>
+
+        <center>
+            <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        </center>
+    </div>
+
+    <script>
+        let balance = 0;
+        let transactionCount = 0;
+        let history = [];
+
+        function updateDisplay() {
+            document.getElementById('balance').textContent = `$${balance.toFixed(2)}`;
+            document.getElementById('transactionCount').textContent = transactionCount;
+        }
+
+        function addHistory(type, amount) {
+            const historyList = document.getElementById('historyList');
+            if (history.length === 0) {
+                historyList.innerHTML = '';
+            }
+
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            const date = new Date().toLocaleString();
+            
+            item.innerHTML = `
+                <div>
+                    <div class="${type}">${type === 'deposit' ? '↑' : '↓'} ${type.toUpperCase()}</div>
+                    <small>${date}</small>
+                </div>
+                <div class="${type}">$${amount.toFixed(2)}</div>
+            `;
+            
+            historyList.insertBefore(item, historyList.firstChild);
+            history.push({type, amount, date});
+        }
+
+        function deposit() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount!');
+                return;
+            }
+
+            balance += amount;
+            transactionCount++;
+            addHistory('deposit', amount);
+            updateDisplay();
+            document.getElementById('amount').value = '';
+        }
+
+        function withdraw() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount!');
+                return;
+            }
+
+            if (amount > balance) {
+                alert('Insufficient balance!');
+                return;
+            }
+
+            balance -= amount;
+            transactionCount++;
+            addHistory('withdraw', amount);
+            updateDisplay();
+            document.getElementById('amount').value = '';
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
